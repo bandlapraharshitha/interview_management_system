@@ -1,9 +1,6 @@
-# Wingmann - Interview Management System
-
-Wingmann is a full-stack, SaaS-style interview management platform designed to facilitate a verification process through scheduled interviews. It provides a robust, role-based architecture serving **Administrators**, **Interviewers**, and **Users**.
-
 ##  Live Deployment
 
+**Deployed Link** : [link](https://interview-management-system-qkit.vercel.app/)
 The application is deployed across a modern 3-tier architecture:
 - **Frontend (Client):** Vercel
 - **Backend (API):** Render
