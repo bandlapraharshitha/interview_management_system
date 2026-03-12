@@ -2,7 +2,7 @@
 
 Wingmann is a full-stack, SaaS-style interview management platform designed to facilitate a verification process through scheduled interviews. It provides a robust, role-based architecture serving **Administrators**, **Interviewers**, and **Users**.
 
-## 🚀 Live Deployment
+##  Live Deployment
 
 The application is deployed across a modern 3-tier architecture:
 - **Frontend (Client):** Vercel
@@ -11,7 +11,7 @@ The application is deployed across a modern 3-tier architecture:
 
 ***
 
-## 🛠 Technology Stack
+##  Technology Stack
 
 ### Frontend
 * **Framework**: React 18, [Next.js](https://nextjs.org/) (App Router)
@@ -28,116 +28,3 @@ The application is deployed across a modern 3-tier architecture:
 * **Architecture**: MVC (Models, Views/Routes, Controllers)
 
 ***
-
-## 🎯 Core Functionality & Features
-
-### 1. 🛡️ Role-Based Access Control
-The platform natively supports three distinct user roles:
-* **User**: Regular applicants requesting verification.
-* **Interviewer**: Executive members who conduct interviews.
-* **Admin**: Superusers who manage the system and staff.
-
-### 2. 👩‍💼 User Features
-* **Authentication**: Secure registration and login.
-* **Scheduling**: Browse dynamically generated available interview slots.
-* **Dashboard**: Track upcoming interview status (Date, Time, Interviewer).
-* **Meeting Links**: View and instantly join provided video/meeting links.
-* **Status Updates**: Receive Real-time decision updates (Pending, Accepted, Rejected).
-
-### 3. 🕴️ Interviewer Features
-* **Live Dashboard**: Real-time "Ongoing Interview" and "Next Upcoming" dynamic widgets.
-* **Availability Management**: Set precise date and active time blocks without overlapping past slots.
-* **Applicant Review**: Secure modal popups to view applicant data (Age, Gender, City, Email).
-* **Meeting Management**: Generate and attach meeting links directly to upcoming sessions.
-* **Decision System**: Complete interviews by submitting official "Accept" or "Reject" verdicts.
-* **Smart Tables**: Chronological scheduling tables with status filtering.
-
-### 4. 👑 Admin Features
-* **Global Monitoring**: High-level statistical dashboard out of the box.
-* **Staff Management**: Enroll, configure, and remove authorized Interviewers.
-* **Interview Oversight**: View all scheduled, completed, and pending interviews globally.
-* **Advanced Tables**: Status, Decision, and Timeline filters over the entire database.
-
-***
-
-## 💻 Local Development Setup
-
-Follow these steps to run the stack locally.
-
-### Prerequisites
-* [Node.js](https://nodejs.org/) (v18+ recommended)
-* MongoDB (Local instance or Cloud Atlas URI)
-* Git
-
-### 1. Clone the repository
-\`\`\`bash
-git clone https://github.com/bandlapraharshitha/interview_management_system.git
-cd interview_management_system
-\`\`\`
-
-### 2. Setup the Backend API
-\`\`\`bash
-cd backend
-
-# Install dependencies
-npm install
-
-# Create environment file
-touch .env
-\`\`\`
-Inside the `backend/.env` file, add the following variables:
-\`\`\`env
-PORT=5001
-MONGO_URI=mongodb://127.0.0.1:27017/wingmann # Or your MongoDB Atlas String
-JWT_SECRET=your_super_secret_jwt_key
-\`\`\`
-\`\`\`bash
-# Start the development server
-npm run dev
-\`\`\`
-
-### 3. Setup the Frontend Client
-Open a new terminal window:
-\`\`\`bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Create environment file
-touch .env.local
-\`\`\`
-Inside the `frontend/.env.local` file, connect it to your local backend:
-\`\`\`env
-NEXT_PUBLIC_API_URL=http://localhost:5001/api
-\`\`\`
-\`\`\`bash
-# Start the Next.js development server
-npm run dev
-\`\`\`
-
-* The API will run on `http://localhost:5001`
-* The Client will run on `http://localhost:3000`
-
-***
-
-## ☁️ Production Deployment Guide
-
-If you wish to deploy your own instance of Wingmann, here is the reference guide:
-
-1. **Database (MongoDB Atlas)**:
-   - Create an M0 cluster.
-   - Set Network Access to `0.0.0.0/0`.
-   - Copy connection string and configure `appName` and `database` name.
-2. **API (Render)**:
-   - Create a new Web Service tied to the `backend` Root Directory.
-   - Build Command: `npm install`
-   - Start Command: `node src/server.js`
-   - Inject `MONGO_URI`, `JWT_SECRET`, and `PORT` via Render Environment Variables.
-3. **Client (Vercel)**:
-   - Import the repository and set Root Directory to `frontend`.
-   - Inject `NEXT_PUBLIC_API_URL` matching your new Render deployment route (e.g., `https://wingmann-api.onrender.com/api`).
-   - Deploy.
-
----
-*Developed for Wingmann. Verified Connections Only.*
