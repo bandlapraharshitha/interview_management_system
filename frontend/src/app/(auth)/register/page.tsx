@@ -92,7 +92,7 @@ export default function RegisterPage() {
 
             <div className="space-y-2 col-span-2 sm:col-span-1">
               <Label htmlFor="gender">Gender</Label>
-              <Select onValueChange={(val) => handleSelectChange('gender', val)} required>
+              <Select onValueChange={(val: string | null) => { if (typeof val === 'string') handleSelectChange('gender', val); }}>
                 <SelectTrigger id="gender">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
