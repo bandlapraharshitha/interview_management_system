@@ -12,6 +12,7 @@ export default function AdminInterviewsPage() {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedInterview, setSelectedInterview] = useState<any>(null);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     const fetchInterviews = async () => {
@@ -27,11 +28,42 @@ export default function AdminInterviewsPage() {
     fetchInterviews();
   }, []);
 
+  const filteredInterviews = interviews.filter((inv: any) => {
+    if (filter === 'all') return true;
+    if (filter === 'scheduled') return inv.status === 'scheduled';
+    if (filter === 'completed') return inv.status === 'completed';
+    if (filter === 'accepted') return inv.decision === 'accepted';
+    if (filter === 'rejected') return inv.decision === 'rejected';
+    if (filter === 'pending') return inv.decision === 'none';
+    return true;
+  });
+
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">All Interviews</h1>
-        <p className="text-slate-500 mt-2">Monitor scheduled and completed interviews across the platform.</p>
+      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900">All Interviews</h1>
+          <p className="text-slate-500 mt-2">Monitor scheduled and completed interviews across the platform.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <select 
+            className="h-10 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="all">All Interviews</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="completed">Completed</option>
+            <option value="accepted">Accepted</option>
+            <option value="rejected">Rejected</option>
+            <option value="pending">Pending</option>
+          </select>
+          {filter !== 'all' && (
+            <Button variant="ghost" onClick={() => setFilter('all')} className="text-slate-500 hover:text-slate-900 hover:bg-slate-100">
+              Clear Filter
+            </Button>
+          )}
+        </div>
       </div>
 
       <Card className="shadow-sm border-slate-200">
@@ -51,7 +83,7 @@ export default function AdminInterviewsPage() {
             <tbody className="[&_tr:last-child]:border-0">
               {loading ? (
                 <tr><td colSpan={7} className="h-24 text-center text-slate-500">Loading...</td></tr>
-              ) : interviews.map((inv: any) => (
+              ) : filteredInterviews.map((inv: any) => (
                 <tr key={inv._id} className="border-b transition-colors hover:bg-slate-50/50">
                   <td className="p-4 align-middle">
                     <div className="font-medium text-slate-900">{inv.userId?.name}</div>
@@ -139,7 +171,7 @@ export default function AdminInterviewsPage() {
                   </td>
                 </tr>
               ))}
-              {interviews.length === 0 && !loading && (
+              {filteredInterviews.length === 0 && !loading && (
                 <tr><td colSpan={7} className="h-24 text-center text-slate-500">No interviews found.</td></tr>
               )}
             </tbody>

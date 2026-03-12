@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Logo } from '@/components/shared/Logo';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import Link from 'next/link';
 export default function InterviewerLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!loading) {
@@ -32,16 +33,16 @@ export default function InterviewerLayout({ children }: { children: React.ReactN
           <Logo />
         </div>
         <nav className="flex-1 px-4 py-6 space-y-2">
-          <Link href="/interviewer" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-purple-50 hover:text-[#563574] text-gray-700 font-medium transition-colors">
-            <LayoutDashboard className="w-5 h-5 text-gray-500" />
+          <Link href="/interviewer" className={`flex items-center gap-3 px-3 py-2 rounded-md font-medium transition-colors ${pathname === '/interviewer' ? 'bg-purple-50 text-[#563574]' : 'hover:bg-purple-50 hover:text-[#563574] text-gray-700'}`}>
+            <LayoutDashboard className={`w-5 h-5 ${pathname === '/interviewer' ? 'text-[#563574]' : 'text-gray-500'}`} />
             Dashboard
           </Link>
-          <Link href="/interviewer/availability" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-purple-50 hover:text-[#563574] text-gray-700 font-medium transition-colors">
-            <Clock className="w-5 h-5 text-gray-500" />
+          <Link href="/interviewer/availability" className={`flex items-center gap-3 px-3 py-2 rounded-md font-medium transition-colors ${pathname === '/interviewer/availability' ? 'bg-purple-50 text-[#563574]' : 'hover:bg-purple-50 hover:text-[#563574] text-gray-700'}`}>
+            <Clock className={`w-5 h-5 ${pathname === '/interviewer/availability' ? 'text-[#563574]' : 'text-gray-500'}`} />
             Availability
           </Link>
-          <Link href="/interviewer/interviews" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-purple-50 hover:text-[#563574] text-gray-700 font-medium transition-colors">
-            <CalendarCheck className="w-5 h-5 text-gray-500" />
+          <Link href="/interviewer/interviews" className={`flex items-center gap-3 px-3 py-2 rounded-md font-medium transition-colors ${pathname === '/interviewer/interviews' ? 'bg-purple-50 text-[#563574]' : 'hover:bg-purple-50 hover:text-[#563574] text-gray-700'}`}>
+            <CalendarCheck className={`w-5 h-5 ${pathname === '/interviewer/interviews' ? 'text-[#563574]' : 'text-gray-500'}`} />
             My Interviews
           </Link>
         </nav>

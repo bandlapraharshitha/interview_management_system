@@ -16,6 +16,7 @@ export default function ScheduledInterviewsPage() {
   const [updating, setUpdating] = useState(false);
   const [meetingLink, setMeetingLink] = useState('');
   const [isEditingLink, setIsEditingLink] = useState(false);
+  const [filter, setFilter] = useState('all');
 
   const fetchInterviews = async () => {
     try {
@@ -57,11 +58,43 @@ export default function ScheduledInterviewsPage() {
     }
   };
 
+  const sortedAndFilteredInterviews = interviews
+    .filter((inv: any) => {
+      if (filter === 'all') return true;
+      if (filter === 'scheduled') return inv.status === 'scheduled';
+      if (filter === 'completed') return inv.status === 'completed';
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      if (!a.slotId?.date || !b.slotId?.date) return 0;
+      const dateA = new Date(`${a.slotId.date}T${a.slotId.startTime}`);
+      const dateB = new Date(`${b.slotId.date}T${b.slotId.startTime}`);
+      return dateA.getTime() - dateB.getTime();
+    });
+
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">My Interviews</h1>
-        <p className="text-gray-500">Manage your scheduled verification interviews and submit decisions.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">My Interviews</h1>
+          <p className="text-gray-500">Manage your scheduled verification interviews and submit decisions.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <select 
+            className="h-10 rounded-md border border-purple-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#563574]"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="all">All Interviews</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="completed">Completed</option>
+          </select>
+          {filter !== 'all' && (
+            <Button variant="ghost" onClick={() => setFilter('all')} className="text-gray-500 hover:text-gray-900 hover:bg-gray-100">
+              Clear Filter
+            </Button>
+          )}
+        </div>
       </div>
 
       <Card className="shadow-sm border-gray-200">
@@ -77,7 +110,7 @@ export default function ScheduledInterviewsPage() {
               </tr>
             </thead>
             <tbody className="[&_tr:last-child]:border-0">
-              {interviews.map((inv: any) => (
+              {sortedAndFilteredInterviews.map((inv: any) => (
                 <tr key={inv._id} className="border-b transition-colors hover:bg-gray-50/50">
                   <td className="p-4 align-middle">
                     <div className="font-medium text-gray-900">{inv.userId?.name}</div>
@@ -247,7 +280,7 @@ export default function ScheduledInterviewsPage() {
                   </td>
                 </tr>
               ))}
-              {interviews.length === 0 && !loading && (
+              {sortedAndFilteredInterviews.length === 0 && !loading && (
                 <tr><td colSpan={5} className="h-32 text-center text-gray-500">No scheduled interviews found.</td></tr>
               )}
             </tbody>

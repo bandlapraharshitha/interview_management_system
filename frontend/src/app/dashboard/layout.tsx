@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Logo } from '@/components/shared/Logo';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import Link from 'next/link';
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -30,12 +31,12 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
           <Logo />
         </div>
         <nav className="flex-1 px-4 py-6 space-y-2">
-          <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium">
-            <Home className="w-5 h-5 text-gray-500" />
+          <Link href="/dashboard" className={`flex items-center gap-3 px-3 py-2 rounded-md font-medium transition-colors ${pathname === '/dashboard' ? 'bg-purple-50 text-[#563574]' : 'hover:bg-gray-100 text-gray-700'}`}>
+            <Home className={`w-5 h-5 ${pathname === '/dashboard' ? 'text-[#563574]' : 'text-gray-500'}`} />
             Dashboard
           </Link>
-          <Link href="/schedule" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium">
-            <Calendar className="w-5 h-5 text-gray-500" />
+          <Link href="/schedule" className={`flex items-center gap-3 px-3 py-2 rounded-md font-medium transition-colors ${pathname === '/schedule' ? 'bg-purple-50 text-[#563574]' : 'hover:bg-gray-100 text-gray-700'}`}>
+            <Calendar className={`w-5 h-5 ${pathname === '/schedule' ? 'text-[#563574]' : 'text-gray-500'}`} />
             Schedule Interview
           </Link>
         </nav>
