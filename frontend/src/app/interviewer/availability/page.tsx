@@ -15,9 +15,28 @@ export default function AvailabilityPage() {
   
   const [formData, setFormData] = useState({
     date: '',
-    startTime: '10:00',
-    endTime: '12:00'
+    startTime: '',
+    endTime: ''
   });
+
+  const timeOptions: string[] = [];
+  const now = new Date();
+  const isToday = formData.date === format(now, 'yyyy-MM-dd');
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+
+  for (let i = 0; i < 24; i++) {
+    for (let j = 0; j < 60; j += 30) {
+      if (isToday) {
+        if (i < currentHour || (i === currentHour && j <= currentMinute)) {
+          continue;
+        }
+      }
+      const hour = i.toString().padStart(2, '0');
+      const minute = j.toString().padStart(2, '0');
+      timeOptions.push(`${hour}:${minute}`);
+    }
+  }
 
   const fetchSlots = async () => {
     try {
@@ -35,7 +54,7 @@ export default function AvailabilityPage() {
       await api.post('/availability', formData);
       fetchSlots();
       // Reset only forms we might change often
-      setFormData({...formData, startTime: '10:00', endTime: '12:00'});
+      setFormData({...formData, startTime: '', endTime: ''});
     } catch (e: any) {
       alert(e.response?.data?.message || 'Failed to add availability');
     }
@@ -70,11 +89,29 @@ export default function AvailabilityPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="startTime">Start Time</Label>
-                <Input id="startTime" type="time" value={formData.startTime} onChange={(e) => setFormData({...formData, startTime: e.target.value})} required />
+                <select 
+                  id="startTime" 
+                  value={formData.startTime} 
+                  onChange={(e) => setFormData({...formData, startTime: e.target.value, endTime: ''})} 
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563574]"
+                  required
+                >
+                  <option value="" disabled>Select start time</option>
+                  {timeOptions.map(time => <option key={time} value={time}>{time}</option>)}
+                </select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="endTime">End Time</Label>
-                <Input id="endTime" type="time" value={formData.endTime} onChange={(e) => setFormData({...formData, endTime: e.target.value})} required />
+                <select 
+                  id="endTime" 
+                  value={formData.endTime} 
+                  onChange={(e) => setFormData({...formData, endTime: e.target.value})} 
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#563574]"
+                  required
+                >
+                  <option value="" disabled>Select end time</option>
+                  {timeOptions.filter(t => !formData.startTime || t > formData.startTime).map(time => <option key={time} value={time}>{time}</option>)}
+                </select>
               </div>
               <div className="pt-2">
                 <Button type="submit" className="w-full bg-[#563574] hover:bg-[#432959] text-white">

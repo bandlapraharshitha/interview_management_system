@@ -6,9 +6,11 @@ const generateTimeSlots = (date, startTime, endTime) => {
   let current = new Date(`${date}T${startTime}`);
   const end = new Date(`${date}T${endTime}`);
 
+  const now = new Date();
+
   while (current < end) {
     const next = new Date(current.getTime() + 30 * 60000); // add 30 mins
-    if (next <= end) {
+    if (next <= end && current > now) {
       slots.push({
         date,
         startTime: current.toTimeString().substring(0, 5),
@@ -30,9 +32,15 @@ export const getAvailableSlots = async (req, res) => {
       return res.status(400).json({ message: 'Date query parameter is required' });
     }
 
-    const slots = await InterviewSlot.find({ date, isBooked: false })
+    let slots = await InterviewSlot.find({ date, isBooked: false })
       .populate('interviewerId', 'name')
       .sort({ startTime: 1 });
+
+    const now = new Date();
+    slots = slots.filter(slot => {
+      const slotTime = new Date(`${slot.date}T${slot.startTime}`);
+      return slotTime > now;
+    });
 
     // Grouping slots by startTime for the frontend "2 slots left" view
     const groupedSlots = slots.reduce((acc, slot) => {
@@ -56,7 +64,12 @@ export const getAvailableSlots = async (req, res) => {
 // @access  Private/Interviewer
 export const getMySlots = async (req, res) => {
   try {
-    const slots = await InterviewSlot.find({ interviewerId: req.user._id }).sort({ date: 1, startTime: 1 });
+    let slots = await InterviewSlot.find({ interviewerId: req.user._id }).sort({ date: 1, startTime: 1 });
+    const now = new Date();
+    slots = slots.filter(slot => {
+      const slotTime = new Date(`${slot.date}T${slot.startTime}`);
+      return slotTime > now;
+    });
     res.json(slots);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -72,6 +85,10 @@ export const createAvailability = async (req, res) => {
     
     // Split into 30 min slots
     const timeBlocks = generateTimeSlots(date, startTime, endTime);
+
+    if (timeBlocks.length === 0) {
+      return res.status(400).json({ message: 'Selected time blocks are invalid or have already passed.' });
+    }
 
     const createdSlots = [];
     for (const block of timeBlocks) {

@@ -27,30 +27,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col hidden md:flex">
-        <div className="h-20 flex items-center px-6 border-b border-slate-800">
-          <Logo className="invert brightness-0" />
+      <aside className="w-64 bg-white border-r flex flex-col hidden md:flex">
+        <div className="h-20 flex items-center px-6 border-b">
+          <Logo />
         </div>
         <nav className="flex-1 px-4 py-6 space-y-2">
-          <Link href="/admin" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300 font-medium transition-colors">
-            <LayoutDashboard className="w-5 h-5 text-slate-400" />
+          <Link href="/admin" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium transition-colors">
+            <LayoutDashboard className="w-5 h-5 text-gray-500" />
             Control Panel
           </Link>
-          <Link href="/admin/interviewers" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300 font-medium transition-colors">
-            <Users className="w-5 h-5 text-slate-400" />
+          <Link href="/admin/interviewers" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium transition-colors">
+            <Users className="w-5 h-5 text-gray-500" />
             Interviewers
           </Link>
-          <Link href="/admin/interviews" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300 font-medium transition-colors">
-            <CalendarDays className="w-5 h-5 text-slate-400" />
+          <Link href="/admin/interviews" className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700 font-medium transition-colors">
+            <CalendarDays className="w-5 h-5 text-gray-500" />
             Interviews
           </Link>
         </nav>
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-4 border-t">
           <div className="mb-4 px-3">
-            <Badge className="mb-2 bg-indigo-500 hover:bg-indigo-600">Admin</Badge>
-            <p className="text-sm font-medium truncate">{user.name}</p>
+            <Badge className="mb-2 bg-purple-100 text-[#563574] hover:bg-purple-100">Admin</Badge>
+            <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
           </div>
-          <Button variant="ghost" className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-slate-800" onClick={logout}>
+          <Button variant="ghost" className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50" onClick={logout}>
             <LogOut className="w-4 h-4 mr-2" />
             Sign Out
           </Button>
