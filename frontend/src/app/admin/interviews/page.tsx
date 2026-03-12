@@ -3,11 +3,15 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/axios';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { User, MapPin } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AdminInterviewsPage() {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedInterview, setSelectedInterview] = useState<any>(null);
 
   useEffect(() => {
     const fetchInterviews = async () => {
@@ -41,11 +45,12 @@ export default function AdminInterviewsPage() {
                 <th className="h-12 px-4 font-medium text-slate-500 text-left">Time</th>
                 <th className="h-12 px-4 font-medium text-slate-500 text-left">Status</th>
                 <th className="h-12 px-4 font-medium text-slate-500 text-left">Decision</th>
+                <th className="h-12 px-4 font-medium text-slate-500 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="[&_tr:last-child]:border-0">
               {loading ? (
-                <tr><td colSpan={6} className="h-24 text-center text-slate-500">Loading...</td></tr>
+                <tr><td colSpan={7} className="h-24 text-center text-slate-500">Loading...</td></tr>
               ) : interviews.map((inv: any) => (
                 <tr key={inv._id} className="border-b transition-colors hover:bg-slate-50/50">
                   <td className="p-4 align-middle">
@@ -76,10 +81,66 @@ export default function AdminInterviewsPage() {
                       {inv.decision === 'none' ? 'Pending' : inv.decision}
                     </span>
                   </td>
+                  <td className="p-4 align-middle text-right">
+                    <Dialog open={selectedInterview?._id === inv._id} onOpenChange={(open) => !open && setSelectedInterview(null)}>
+                      <DialogTrigger>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="border-[#563574] text-[#563574] hover:bg-purple-50"
+                          onClick={() => setSelectedInterview(inv)}
+                        >
+                          View Details
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>Applicant Profile</DialogTitle>
+                          <DialogDescription>Review details for this applicant.</DialogDescription>
+                        </DialogHeader>
+                        
+                        <div className="py-4 space-y-4 text-left">
+                          <div className="flex items-center gap-4 p-4 border rounded-xl bg-gray-50/50">
+                             <div className="w-12 h-12 bg-purple-100 rounded-full flex justify-center items-center shrink-0">
+                               <User className="w-6 h-6 text-[#563574]" />
+                             </div>
+                             <div>
+                                <h3 className="font-semibold text-lg text-gray-900">{inv.userId?.name}</h3>
+                                <p className="text-sm text-gray-500">{inv.userId?.email}</p>
+                             </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                              <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Age</p>
+                              <p className="font-medium text-gray-900">{inv.userId?.age || 'N/A'}</p>
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Gender</p>
+                              <p className="font-medium text-gray-900 capitalize">{inv.userId?.gender || 'N/A'}</p>
+                            </div>
+                            <div className="space-y-1 col-span-2">
+                              <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">City</p>
+                              <p className="font-medium text-gray-900">{inv.userId?.city || 'N/A'}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 mt-4">
+                             <p className="text-sm text-blue-800 font-medium">Interview Details</p>
+                             <p className="text-blue-900 text-sm mt-1">
+                               Date: {inv.slotId?.date ? format(new Date(inv.slotId.date), 'EEEE, MMMM d, yyyy') : ''}<br/>
+                               Time: {inv.slotId?.startTime} - {inv.slotId?.endTime}<br/>
+                               Interviewer: {inv.interviewerId?.name}
+                             </p>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </td>
                 </tr>
               ))}
               {interviews.length === 0 && !loading && (
-                <tr><td colSpan={6} className="h-24 text-center text-slate-500">No interviews found.</td></tr>
+                <tr><td colSpan={7} className="h-24 text-center text-slate-500">No interviews found.</td></tr>
               )}
             </tbody>
           </table>

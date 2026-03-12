@@ -6,6 +6,7 @@ const interviewSchema = new mongoose.Schema({
   slotId: { type: mongoose.Schema.Types.ObjectId, ref: 'InterviewSlot', required: true },
   status: { type: String, enum: ['scheduled', 'completed', 'canceled'], default: 'scheduled' },
   decision: { type: String, enum: ['none', 'accepted', 'rejected'], default: 'none' },
+  meetingLink: { type: String }
 }, {
   timestamps: true
 });

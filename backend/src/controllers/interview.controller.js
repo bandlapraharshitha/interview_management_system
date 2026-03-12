@@ -43,13 +43,13 @@ export const getInterviews = async (req, res) => {
     let interviews;
     if (req.user.role === 'admin') {
       interviews = await Interview.find()
-        .populate('userId', 'name email city')
+        .populate('userId', 'name email city age gender')
         .populate('interviewerId', 'name')
         .populate('slotId', 'date startTime endTime')
         .sort('-createdAt');
     } else if (req.user.role === 'interviewer') {
       interviews = await Interview.find({ interviewerId: req.user._id })
-        .populate('userId', 'name email city')
+        .populate('userId', 'name email city age gender')
         .populate('slotId', 'date startTime endTime')
         .sort('-createdAt');
     } else {
@@ -99,6 +99,32 @@ export const updateInterviewDecision = async (req, res) => {
     }
 
     res.json({ message: `Interview decision set to ${decision}`, interview });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Update interview meeting link
+// @route   PATCH /api/interviews/:id/link
+// @access  Private (Interviewer)
+export const updateMeetingLink = async (req, res) => {
+  try {
+    const { meetingLink } = req.body;
+
+    const interview = await Interview.findById(req.params.id);
+
+    if (!interview) {
+      return res.status(404).json({ message: 'Interview not found' });
+    }
+
+    if (interview.interviewerId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+       return res.status(401).json({ message: 'Not authorized' });
+    }
+
+    interview.meetingLink = meetingLink;
+    await interview.save();
+
+    res.json({ message: 'Meeting link updated successfully', interview });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -123,10 +123,24 @@ export default function UserDashboard() {
             
             {interview.status === 'scheduled' && (
               <div className="mt-8 pt-6 border-t">
-                <p className="text-sm text-gray-500 flex items-center gap-2">
-                  <Info className="w-4 h-4" /> 
-                  A meeting link will be sent to your email 15 minutes before the interview begins.
-                </p>
+                {interview.meetingLink ? (
+                   <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                     <div>
+                       <h4 className="font-semibold text-purple-900">Virtual Meeting Ready</h4>
+                       <p className="text-sm text-purple-700 mt-1">Your interviewer has provided the link to join the meeting.</p>
+                     </div>
+                     <Link href={interview.meetingLink} target="_blank">
+                       <Button className="bg-[#563574] hover:bg-[#432959] text-white whitespace-nowrap">
+                         Join Meeting
+                       </Button>
+                     </Link>
+                   </div>
+                ) : (
+                  <p className="text-sm text-gray-500 flex items-center gap-2">
+                    <Info className="w-4 h-4" /> 
+                    A meeting link will be sent to your email 15 minutes before the interview begins.
+                  </p>
+                )}
               </div>
             )}
           </CardContent>
